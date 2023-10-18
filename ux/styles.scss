@@ -1,0 +1,81 @@
+// import fonts
+@import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro&family=Merriweather&family=Roboto&display=swap');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+//
+// setup bulma
+// 
+
+@import "../node_modules/bulma/sass/utilities/initial-variables";
+
+$family-sans-serif: "Roboto", "Helvetica", "Arial", sans-serif;
+$family-monospace: "Anonymous Pro", monospace;
+$title-family: "Merriweather", sans-serif;
+
+@import "../node_modules/bulma/bulma";
+
+.main-area {
+    background-color: #ECF0F3;
+}
+
+.section.main-area { 
+    min-height: 100vh;
+}
+
+.playing-card {
+    aspect-ratio: 1 / 1.25;
+    background-color: $grey-lighter;
+    border-radius: 10px;
+    box-shadow: 0 .5em 1em -.125em #0a0a0a1a,0 0 0 1px #0a0a0a05;
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+    margin: 5px;
+    max-width: 125px;
+
+    .playing-card-middle {
+        align-items: center;
+        background: white;
+        border-radius: 100%;
+        border: 1px solid #999;
+        color: black;
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        margin: 0 20px;
+        transform: skewX(-15deg);
+
+        span {
+            transform: skewX(15deg);
+        }
+    }
+
+    .playing-card-start {
+        font-weight: bold;
+        padding: 5px 10px 2px;
+    }
+
+    .playing-card-end {
+        padding: 2px 10px 5px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    &.is-selected {
+        background-color: $turquoise;
+    }
+}
+
+.navbar-item {
+    .fa-square {
+        color: $cyan;
+    }
+
+    h1 {
+        font-family: $title-family;
+    }
+}
+
+.topic-link {
+    color: $white;
+}
