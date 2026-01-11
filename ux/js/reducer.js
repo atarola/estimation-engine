@@ -33,7 +33,7 @@ export const reducer = createReducer(initialState, (builder) => {
         return { ...state, loading: false, error: action.payload};
     });
 
-    builder.addCase("status", (state, action) => {
+    builder.addCase("room_details", (state, action) => {
         return {
             ...action.payload,
             loading: false, 

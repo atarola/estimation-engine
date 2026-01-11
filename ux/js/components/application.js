@@ -30,14 +30,14 @@ function MainArea() {
         <Results />;
 
     return (
-        <section class="section main-area">
-            <div class="container">
-                <div class="columns">
-                    <div class="column is-3">
+        <section className="section main-area">
+            <div className="container">
+                <div className="columns">
+                    <div className="column is-3">
                         <Sidebar />
                     </div>
-                    <div class="column is-9">
-                        <div class="content is-medium">
+                    <div className="column is-9">
+                        <div className="content is-medium">
                             { content }
                         </div>
                     </div>
@@ -48,7 +48,6 @@ function MainArea() {
 }
 
 function isRegistered(store) {
-    debugger
     let registered = true;
     registered = (registered && store.id != null);
     registered = registered && store.participants.hasOwnProperty(getUuid());

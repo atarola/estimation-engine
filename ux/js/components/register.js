@@ -19,26 +19,26 @@ export function Register() {
     }
 
     return (
-        <section class="hero is-fullheight-with-navbar main-area">
-            <div class="hero-body">
-                <div class="container has-text-centered">
-                    <div class="column is-4 is-offset-4">
-                        <h3 class="title has-text-black">Register</h3>
-                        <div class="box">
+        <section className="hero is-fullheight-with-navbar main-area">
+            <div className="hero-body">
+                <div className="container has-text-centered">
+                    <div className="column is-4 is-offset-4">
+                        <h3 className="title has-text-black">Register</h3>
+                        <div className="box">
                             <form onSubmit={ onFormSubmit }>
-                                <div class="field">
-                                    <div class="control">
-                                        <input class="input" 
+                                <div className="field">
+                                    <div className="control">
+                                        <input className="input" 
                                                type="text" 
                                                placeholder="Your Name" 
-                                               autofocus=""
+                                               autoFocus
                                                onChange={ onNameChange }
                                                value={ name } />
                                     </div>
                                 </div>
 
                                 <input type="submit" 
-                                       class="button is-block is-info is-fullwidth"
+                                       className="button is-block is-info is-fullwidth"
                                        value="Login" />
                             </form>
                         </div>

@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux'
 
 export function Header() {
   return (
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <div class="navbar-item">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-square fa-stack-2x"></i>
-            <i class="fa fa-motorcycle fa-stack-1x fa-inverse"></i>
+    <nav className="navbar is-dark" role="navigation" aria-label="main navigation">
+      <div className="navbar-brand">
+        <div className="navbar-item">
+          <span className="fa-stack fa-lg">
+            <i className="fa fa-square fa-stack-2x"></i>
+            <i className="fa fa-motorcycle fa-stack-1x fa-inverse"></i>
           </span>
           <h1>Estimation Engine</h1>
         </div>
@@ -26,9 +26,9 @@ function Topic() {
   }
 
   return (
-    <div class="navbar-item">
+    <div className="navbar-item">
       Room Link: &nbsp;
-      <span class="is-family-monospace">
+      <span className="is-family-monospace">
         {window.location.href}
       </span>
     </div>

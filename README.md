@@ -23,5 +23,5 @@ Setup the repo locally:
 
 To run in dev mode, use two tabs:
 
-    $ cargo watch --no-vcs-ignores -i ux/ -x "shuttle run"
+    $ cargo watch --no-vcs-ignores -i ux/ -x "cargo run"
     $ yarn watch 'yarn build' ux

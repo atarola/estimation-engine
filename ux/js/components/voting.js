@@ -24,17 +24,17 @@ export function Voting() {
     let userUuid = getUuid();
     let userVote = (votes.find((item) => item.uuid == userUuid) || emptyVote).vote;
 
-    let voteCards = voteOptions.map((option) => Card({...option, userVote }));
-    let secondaryCards = secondaryOptions.map((option) => Card({...option, userVote }));
+    let voteCards = voteOptions.map((option) => <Card key={option.value} {...option} userVote={userVote} />);
+    let secondaryCards = secondaryOptions.map((option) => <Card key={option.value} {...option} userVote={userVote} />);
 
     return (
-        <div class="box">
-            <h4 class="title is-4">Vote</h4>
-            <div class="tile is-ancestor is-vertical">
-                <div class="tile is-parent">
+        <div className="box">
+            <h4 className="title is-4">Vote</h4>
+            <div className="tile is-ancestor is-vertical">
+                <div className="tile is-parent">
                     { voteCards }
                 </div>
-                <div class="tile is-parent">
+                <div className="tile is-parent">
                     { secondaryCards }
                 </div>
             </div>
@@ -55,19 +55,18 @@ function Card(props) {
         "";
 
     return (
-        <div class={`tile playing-card ${selected}`} onClick={ onClick }>
-            <div class="playing-card-start is-size-7">
+        <div className={`tile playing-card ${selected}`} onClick={ onClick }>
+            <div className="playing-card-start is-size-7">
                 { props.display }
             </div>
-            <div class="playing-card-middle is-size-2">
+            <div className="playing-card-middle is-size-2">
                 <span>
                     { props.display }
                 </span>
             </div>
-            <div class="playing-card-end is-size-7">
+            <div className="playing-card-end is-size-7">
                 { props.display }
             </div>
         </div>
     )
 }
-

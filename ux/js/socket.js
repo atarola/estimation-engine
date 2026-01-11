@@ -13,7 +13,7 @@ export function createWebSocket(id, name, dispatch) {
         clearTimeout(timeoutHandle);
         timeoutHandle = setTimeout(() => {
             dispatch(register({ name: name }));
-        }, 10000);
+        }, 30000);
     } 
 
     socket = new WebSocket(`${proto}//${window.location.host}/ws/${id}`);

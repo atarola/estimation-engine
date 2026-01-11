@@ -14,7 +14,7 @@ export function Sidebar() {
 
 function Wrapper({ children }) {
     return (
-        <nav class="menu">
+        <nav className="menu">
             { children }
         </nav>
     );
@@ -31,8 +31,8 @@ function Participants() {
         let voted = voters.includes(participant.uuid) ? <VotedTag /> : <PendingTag />;
 
         return (
-            <li key={participant.uuid} class="tile mb-1">
-                <div class="is-flex-grow-1">{ participant.name }</div>
+            <li key={participant.uuid} className="tile mb-1">
+                <div className="is-flex-grow-1">{ participant.name }</div>
                 <div>{ voted }</div>
             </li>
         );
@@ -40,10 +40,10 @@ function Participants() {
 
     return (
         <>
-            <p class="menu-label">
+            <p className="menu-label">
                 Participants
             </p>
-            <ul class="menu-list">
+            <ul className="menu-list">
                 { participants }
             </ul>
         </>
@@ -60,12 +60,12 @@ function ActionButton() {
 
     return (
         <>
-            <p class="menu-label">
+            <p className="menu-label">
                 Actions
             </p>
-            <ul class="menu-list">
+            <ul className="menu-list">
                 <li>
-                    <button onClick={ handler } class="button is-fullwidth is-primary is-rounded">
+                    <button onClick={ handler } className="button is-fullwidth is-primary is-rounded">
                         { state == "vote" ? "Reveal Votes" : "Reset Votes" }
                     </button>  
                 </li>
@@ -76,9 +76,9 @@ function ActionButton() {
 
 function PendingTag() {
     return (
-        <span class="tag icon-text">
-            <span class="icon">
-                <i class="fa fa-cog fa-spin"></i>
+        <span className="tag icon-text">
+            <span className="icon">
+                <i className="fa fa-cog fa-spin"></i>
             </span>
             <span>Pending</span>
         </span>
@@ -87,12 +87,11 @@ function PendingTag() {
 
 function VotedTag() {
     return (
-        <span class="tag is-success icon-text">
-            <span class="icon">
-                <i class="fa fa-check-square"></i>
+        <span className="tag is-success icon-text">
+            <span className="icon">
+                <i className="fa fa-check-square"></i>
             </span>
             <span>Voted</span>
         </span>
     );
 }
-

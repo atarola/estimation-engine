@@ -1,5 +1,0 @@
-name = "estimation-engine"
-
-assets = [
-  "public/*"
-]

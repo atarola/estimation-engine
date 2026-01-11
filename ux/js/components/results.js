@@ -17,7 +17,7 @@ export function Results() {
     if (store.votes.length > 0) {
         rows = store.votes.map((vote) => {
             return (
-                <tr>
+                <tr key={ vote.uuid }>
                     <td>{ store.participants[vote.uuid].name }</td>
                     <td>{ voteOptions[vote.vote] }</td>
                 </tr>
@@ -33,9 +33,9 @@ export function Results() {
 
 
     return (
-        <div class="box">
-            <h4 class="title is-4">Results</h4>
-            <table class="table is-striped">
+        <div className="box">
+            <h4 className="title is-4">Results</h4>
+            <table className="table is-striped">
                 <thead>
                     <tr>
                         <th>Name</th>
