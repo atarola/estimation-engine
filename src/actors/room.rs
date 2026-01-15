@@ -4,6 +4,10 @@ use std::fmt;
 use poem::web::websocket::WebSocketStream;
 use tokio::sync::mpsc;
 use tokio::sync::oneshot;
+use tokio_stream::adapters::Filter;
+use tokio_stream::wrappers::WatchStream;
+use tokio_stream::StreamExt;
+use tokio_stream::StreamMap;
 
 use crate::actors::connection::ConnectionHandle;
 use crate::routes::types::Room;
@@ -41,7 +45,9 @@ struct AddWebsocketEvent {
 
 impl fmt::Debug for AddWebsocketEvent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("").field(&self.uuid).finish()
+        f.debug_struct("AddWebsocketEvent")
+            .field("uuid", &self.uuid)
+            .finish_non_exhaustive()
     }
 }
 
@@ -54,31 +60,46 @@ enum RoomEvent {
     Reset(ResetEvent),
 }
 
+type DisconnectStream = Filter<WatchStream<bool>, fn(&bool) -> bool>;
+
 struct RoomActor {
-    receiver: mpsc::Receiver<RoomEvent>,
+    recv: mpsc::Receiver<RoomEvent>,
     connections: HashMap<String, ConnectionHandle>,
+    watch_streams: StreamMap<String, DisconnectStream>,
     room: Room,
 }
 
 impl RoomActor {
-    fn new(room_id: String, receiver: mpsc::Receiver<RoomEvent>) -> Self {
+    fn new(room_id: String, recv: mpsc::Receiver<RoomEvent>) -> Self {
         Self {
-            receiver,
+            recv,
             connections: HashMap::new(),
+            watch_streams: StreamMap::new(),
             room: Room::new(room_id),
         }
     }
 
     async fn run(mut self) {
-        while let Some(event) = self.receiver.recv().await {
-            tracing::debug!(?event, "room event");
+        loop {
+            tokio::select! {
+                Some(event) = self.recv.recv() => {
+                    tracing::debug!(?event, "room event");
 
-            match event {
-                RoomEvent::Register(event) => self.on_register(event).await,
-                RoomEvent::AddWebsocket(event) => self.on_add_websocket(event).await,
-                RoomEvent::Vote(event) => self.on_vote(event).await,
-                RoomEvent::Reveal(event) => self.on_reveal(event).await,
-                RoomEvent::Reset(event) => self.on_reset(event).await,
+                    match event {
+                        RoomEvent::Register(event) => self.on_register(event).await,
+                        RoomEvent::AddWebsocket(event) => self.on_add_websocket(event).await,
+                        RoomEvent::Vote(event) => self.on_vote(event).await,
+                        RoomEvent::Reveal(event) => self.on_reveal(event).await,
+                        RoomEvent::Reset(event) => self.on_reset(event).await,
+                    }
+                }
+                Some((uuid, _)) = self.watch_streams.next() => {
+                    self.connections.remove(&uuid);
+                    self.watch_streams.remove(&uuid);
+                    self.room.remove_participant(uuid);
+                    self.update_status().await;
+                }
+                else => break,
             }
         }
     }
@@ -91,7 +112,11 @@ impl RoomActor {
 
     async fn on_add_websocket(&mut self, event: AddWebsocketEvent) {
         let connection = ConnectionHandle::new(event.websocket);
+        let watch = WatchStream::new(connection.connection_watch())
+            .filter(is_disconnected as fn(&bool) -> bool);
+
         self.connections.insert(event.uuid.clone(), connection);
+        self.watch_streams.insert(event.uuid.clone(), watch);
         self.update_status().await;
         let _ = event.respond_to.send(());
     }
@@ -116,35 +141,29 @@ impl RoomActor {
 
     async fn update_status(&mut self) {
         let payload = serde_json::to_value(&self.room).unwrap();
-        let mut dead = Vec::new();
 
-        for (key, handle) in self.connections.iter() {
+        for handle in self.connections.values() {
             handle.send_room_details(payload.clone());
-
-            if !handle.is_connected() {
-                dead.push(key.clone());
-            }
-        }
-
-        for key in dead {
-            self.connections.remove(&key);
-            self.room.remove_participant(key);
         }
     }
 }
 
+fn is_disconnected(conn: &bool) -> bool {
+    !*conn
+}
+
 #[derive(Clone, Debug)]
 pub struct RoomHandle {
-    sender: mpsc::Sender<RoomEvent>,
+    send: mpsc::Sender<RoomEvent>,
 }
 
 impl RoomHandle {
     pub fn new(room_id: String) -> Self {
-        let (sender, receiver) = mpsc::channel(8);
-        let actor = RoomActor::new(room_id.clone(), receiver);
+        let (send, recv) = mpsc::channel(8);
+        let actor = RoomActor::new(room_id.clone(), recv);
         tokio::spawn(async move { actor.run().await });
 
-        Self { sender: sender }
+        Self { send }
     }
 
     pub async fn register(&self, uuid: String, name: String) -> Room {
@@ -178,7 +197,7 @@ impl RoomHandle {
     {
         let (tx, rx) = oneshot::channel::<R>();
         let event = build(tx);
-        let _ = self.sender.send(event).await;
+        let _ = self.send.send(event).await;
         rx.await.expect("room actor dropped response")
     }
 }

@@ -8,7 +8,7 @@ The application is in two parts:
 
 The UX is a bog-standard react/redux javascript application using bulma for the base styles. The only bit of trickery is using a websocket connection from the backend to handle all updates from the backend.  
 
-The backend is a poem.rs application, being run and deployed using shuttle.rs. The data for the app is stored in a hashmap protected by an Arc/Mutex pair, and stored in a static variable.  The only other state-tracking is via a browser cookie to identify the client.  
+The backend is a poem.rs application, using a set of actors per connection, plus one for each room. 
 
 ### Developer Setup
 
@@ -23,5 +23,5 @@ Setup the repo locally:
 
 To run in dev mode, use two tabs:
 
-    $ cargo watch --no-vcs-ignores -i ux/ -x "cargo run"
+    $ cargo watch --no-vcs-ignores -i ux/ -x run
     $ yarn watch 'yarn build' ux
